@@ -1,0 +1,45 @@
+{
+  "name": "botium-connector-google-assistant",
+  "version": "0.0.1",
+  "description": "Botium Connector for Google Assistant",
+  "main": "dist/botium-connector-google-assistant-cjs.js",
+  "module": "dist/botium-connector-google-assistant-es.js",
+  "bin": {
+    "botium-connector-google-assistant-init": "./CreateCapabilities.js"
+  },
+  "scripts": {
+    "build": "npm run eslint && rollup -c",
+    "eslint": "eslint index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeforequity-at/botium-connector-google-assistant.git"
+  },
+  "author": "Botium GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codeforequity-at/botium-core/issues"
+  },
+  "homepage": "https://github.com/codeforequity-at/botium-connector-google-assistant#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "rollup": "^0.58.2",
+    "rollup-plugin-buble": "^0.19.2",
+    "rollup-plugin-commonjs": "^9.1.3",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-resolve": "^3.3.0"
+  },
+  "dependencies": {
+    "actions-on-google-testing": "^0.2.4",
+    "debug": "^3.1.0",
+    "jsonutil": "^0.2.0",
+    "lodash": "^4.17.10",
+    "node-version": "^1.2.0",
+    "readline-sync": "^1.4.9"
+  }
+}
