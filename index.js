@@ -1,12 +1,15 @@
 const debug = require('debug')('botium-connector-google-assistant')
-const { ActionsOnGoogle } = require('./actions-on-google')
+const { ActionsOnGoogle } = require('./src/actions-on-google')
 const _ = require('lodash')
+const util = require('util')
 
 const Capabilities = {
   GOOGLE_ASSISTANT_CLIENT_ID: 'GOOGLE_ASSISTANT_CLIENT_ID',
   GOOGLE_ASSISTANT_CLIENT_SECRET: 'GOOGLE_ASSISTANT_CLIENT_SECRET',
   GOOGLE_ASSISTANT_REFRESH_TOKEN: 'GOOGLE_ASSISTANT_REFRESH_TOKEN',
-  GOOGLE_ASSISTANT_TYPE: 'GOOGLE_ASSISTANT_TYPE'
+  GOOGLE_ASSISTANT_TYPE: 'GOOGLE_ASSISTANT_TYPE',
+  GOOGLE_ASSISTANT_START_UTTERANCE: 'GOOGLE_ASSISTANT_START_UTTERANCE',
+  GOOGLE_ASSISTANT_END_UTTERANCE: 'GOOGLE_ASSISTANT_END_UTTERANCE'
 }
 
 class BotiumConnectorGoogleAssistant {
@@ -21,6 +24,8 @@ class BotiumConnectorGoogleAssistant {
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_SECRET]) throw new Error('GOOGLE_ASSISTANT_CLIENT_SECRET capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN]) throw new Error('GOOGLE_ASSISTANT_REFRESH_TOKEN capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]) throw new Error('GOOGLE_ASSISTANT_TYPE capability required')
+    if (!this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) throw new Error('GOOGLE_ASSISTANT_START_UTTERANCE capability required')
+    if (!this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]) throw new Error('GOOGLE_ASSISTANT_END_UTTERANCE capability required')
 
     return Promise.resolve()
   }
@@ -33,26 +38,28 @@ class BotiumConnectorGoogleAssistant {
       refresh_token: this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN],
       type: this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]
     })
-    return Promise.all([this.tts.Build(), this.stt.Build(), this.avs.Build()])
+    return Promise.resolve()
   }
 
   Start () {
     debug('Start called')
-    this.client.startWith('actionstest-1bc72')
-    return Promise.resolve()
+    // client has start function too, but it uses i18n, which is not well configurable
+    return this.client.send(this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE])
   }
 
   UserSays ({messageText}) {
     debug('UserSays called')
+    debug(`Request: ${messageText}`)
     return this.client.send(messageText)
-
+      .then((response) => {
+        debug(`Response: ${util.inspect(response)}`)
+        this.queueBotSays({ sender: 'bot', messageText: response.textToSpeech.join(' ') })
+      })
   }
 
   Stop () {
     debug('Stop called')
-    this.client.cancel()
-
-    return Promise.resolve()
+    return this.client.send(this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE])
   }
 
   Clean () {

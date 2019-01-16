@@ -5,9 +5,10 @@
   "main": "dist/botium-connector-google-assistant-cjs.js",
   "module": "dist/botium-connector-google-assistant-es.js",
   "bin": {
-    "botium-connector-google-assistant-init": "./CreateCapabilities.js"
+    "botium-connector-google-assistant-init": "./src/CreateCapabilities.js"
   },
   "scripts": {
+    "create-capabilities": "node src/CreateCapabilities.js",
     "build": "npm run eslint && rollup -c",
     "eslint": "eslint index.js"
   },
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "actions-on-google-testing": "^0.2.4",
+    "chai": "^4.2.0",
     "debug": "^3.1.0",
     "jsonutil": "^0.2.0",
     "lodash": "^4.17.10",

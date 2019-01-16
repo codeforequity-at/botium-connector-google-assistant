@@ -64,11 +64,6 @@ typings/
 /.idea
 
 # configs
-/cfg/amazonConfig.json
 /cfg/googleConfig.json
 /samples/botium.json
-/samples/amazonConfig.json
 /samples/googleConfig.json
-
-# alexa answer is stored as mp3 in debug mode
-*.mp3

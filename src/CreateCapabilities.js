@@ -3,12 +3,13 @@ const util = require('util')
 const jsonutil = require('jsonutil')
 const fs = require('fs')
 const readlineSync = require('readline-sync')
-//const https = require('https')
 const { OAuth2Client } = require('google-auth-library')
 
-const BotiumConnectorGoogleAssistant = require('./index').PluginClass
+const BotiumConnectorGoogleAssistant = require('../index').PluginClass
 
-const DEFAULT_GOOGLE_CONFIG = 'googleConfig.json'
+const DEFAULT_GOOGLE_CONFIG = 'cfg/googleConfig.json'
+const DEFAULT_START_UTTERANCE = 'Talk to my test app'
+const DEFAULT_END_UTTERANCE = 'Cancel'
 const OUTPUT_JSON = 'botium.json'
 
 const _extractArgs = () => {
@@ -23,6 +24,14 @@ const _extractArgs = () => {
       console.log(`\nCan not load "${result.googleConfigPath}". (${ex})`)
     }
   } while (!result.googleConfig)
+
+  result.startUtterance = readlineSync.question(`\nStart utterance? (${DEFAULT_START_UTTERANCE}) `, {
+    defaultInput: DEFAULT_START_UTTERANCE
+  })
+
+  result.endUtterance = readlineSync.question(`\nEnd utterance? (${DEFAULT_END_UTTERANCE}) `, {
+    defaultInput: DEFAULT_END_UTTERANCE
+  })
 
   return result
 }
@@ -69,7 +78,9 @@ const _createCapabilities = (args, authResult) => {
     GOOGLE_ASSISTANT_CLIENT_ID: args.googleConfig.installed.client_id,
     GOOGLE_ASSISTANT_CLIENT_SECRET: args.googleConfig.installed.client_secret,
     GOOGLE_ASSISTANT_REFRESH_TOKEN: authResult.refresh_token,
-    GOOGLE_ASSISTANT_TYPE: 'authorized_user'
+    GOOGLE_ASSISTANT_TYPE: 'authorized_user',
+    GOOGLE_ASSISTANT_START_UTTERANCE: args.startUtterance,
+    GOOGLE_ASSISTANT_END_UTTERANCE: args.endUtterance
   }
 }
 

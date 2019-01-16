@@ -4,14 +4,14 @@
   "description": "",
   "main": "botiumFluent.js",
   "scripts": {
-    "init-alexa-avs": "botium-connector-alexa-avs-init",
+    "init-alexa-avs": "botium-connector-google-assistant-init",
     "start": "node botiumFluent.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "botium-connector-alexa-avs": "../",
+    "botium-connector-google-assistant": "../",
     "botium-core": "*"
   }
 }

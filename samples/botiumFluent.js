@@ -4,22 +4,14 @@ const driver = new BotDriver()
 
 driver.BuildFluent()
   .Start()
-  .UserSaysText('ich möchte waschmittel kaufen ?')
+  .UserSaysText('Test Signin')
   .WaitBotSaysText((msg) => {
     console.log(msg)
   })
+  .UserSaysText('Start Signin')
   .WaitBotSaysText((msg) => {
     console.log(msg)
   })
-  .WaitBotSaysText((msg) => {
-    console.log(msg)
-  })
-  .UserSaysText('abbrechen bitte')
-  .WaitBotSaysText((msg) => {
-    console.log(msg)
-  })
-// .UserSaysText('Danke')
-// .WaitBotSaysText(console.log)
   .Stop()
   .Clean()
   .Exec()
