@@ -86,4 +86,5 @@ Use "Cancel"
 * You can test your action with non-linked user without any change.
 * If you invoke the account linking process with this non-linked user, nothing happens. You got empty message return, and the account wont be linked
 * If you perm account linking in Actions console simulator, then you will got a linked user
+* Tested just on [Account linking with Google Sign-In](https://developers.google.com/actions/identity/google-sign-in)
 * You can see account linking on https://myaccount.google.com/permissions
