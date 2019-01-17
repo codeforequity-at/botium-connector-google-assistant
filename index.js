@@ -45,6 +45,11 @@ class BotiumConnectorGoogleAssistant {
     debug('Start called')
     // client has start function too, but it uses i18n, which is not well configurable
     return this.client.send(this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE])
+      .then((response) => {
+        if (response.textToSpeech.length === 0) {
+          throw Error(`Empty response, configuration invalid!\n${util.inspect(response)}`)
+        }
+      })
   }
 
   UserSays ({messageText}) {

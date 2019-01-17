@@ -120,6 +120,8 @@ const _main = async () => {
   const connector = new BotiumConnectorGoogleAssistant({queueBotSays: () => {}, caps})
   try {
     connector.Validate()
+    await connector.Build()
+    await connector.Start()
     console.log(`\nCapabilities are valid`)
   } catch (error) {
     console.log(error.toString())
