@@ -58,7 +58,6 @@ Just follow the suggested steps,
 
 ### 2. Use the generated botium.json
 A file named botium.json is generated containing the required capabilities to be used with Botium.
-TODO!!! The sample botiumFluent.js in the "samples" folder asks Alexa for washing powder (in german language).
 
 ## Supported Capabilities
 
