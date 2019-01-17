@@ -25,9 +25,14 @@ const _extractArgs = () => {
     }
   } while (!result.googleConfig)
 
-  result.startUtterance = readlineSync.question(`\nStart utterance? (${DEFAULT_START_UTTERANCE}) `, {
-    defaultInput: DEFAULT_START_UTTERANCE
-  })
+  // if (readlineSync.question(`\nFile ${OUTPUT_JSON} already exists. Continue? [Y/n] `, {limit: /(y|n|)/}) === 'n') {
+  result.useStartUtterance = readlineSync.question(`\nUse start utterance like "${DEFAULT_START_UTTERANCE}" to activate action? [Y/n] `, {limit: /(y|n|)/}) !== 'n'
+
+  if (result.useStartUtterance) {
+    result.startUtterance = readlineSync.question(`\nStart utterance? (${DEFAULT_START_UTTERANCE}) `, {
+      defaultInput: DEFAULT_START_UTTERANCE
+    })
+  }
 
   result.endUtterance = readlineSync.question(`\nEnd utterance? (${DEFAULT_END_UTTERANCE}) `, {
     defaultInput: DEFAULT_END_UTTERANCE

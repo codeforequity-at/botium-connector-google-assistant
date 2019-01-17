@@ -24,7 +24,6 @@ class BotiumConnectorGoogleAssistant {
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_SECRET]) throw new Error('GOOGLE_ASSISTANT_CLIENT_SECRET capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN]) throw new Error('GOOGLE_ASSISTANT_REFRESH_TOKEN capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]) throw new Error('GOOGLE_ASSISTANT_TYPE capability required')
-    if (!this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) throw new Error('GOOGLE_ASSISTANT_START_UTTERANCE capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]) throw new Error('GOOGLE_ASSISTANT_END_UTTERANCE capability required')
 
     return Promise.resolve()
@@ -44,12 +43,16 @@ class BotiumConnectorGoogleAssistant {
   Start () {
     debug('Start called')
     // client has start function too, but it uses i18n, which is not well configurable
-    return this.client.send(this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE])
-      .then((response) => {
-        if (response.textToSpeech.length === 0) {
-          throw Error(`Empty response, configuration invalid!\n${util.inspect(response)}`)
-        }
-      })
+    if (this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) {
+      return this.client.send(this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE])
+        .then((response) => {
+          if (response.textToSpeech.length === 0) {
+            throw Error(`Empty response, configuration invalid!\n${util.inspect(response)}`)
+          }
+        })
+    } else {
+      return Promise.resolve()
+    }
   }
 
   UserSays ({messageText}) {

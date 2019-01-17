@@ -8,10 +8,6 @@ driver.BuildFluent()
   .WaitBotSaysText((msg) => {
     console.log(msg)
   })
-  .UserSaysText('Start Signin')
-  .WaitBotSaysText((msg) => {
-    console.log(msg)
-  })
   .Stop()
   .Clean()
   .Exec()
