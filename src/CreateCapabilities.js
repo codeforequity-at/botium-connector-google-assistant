@@ -7,7 +7,7 @@ const { OAuth2Client } = require('google-auth-library')
 
 const BotiumConnectorGoogleAssistant = require('../index').PluginClass
 
-const DEFAULT_GOOGLE_CONFIG = 'cfg/googleConfig.json'
+const DEFAULT_GOOGLE_CONFIG = 'googleConfig.json'
 const DEFAULT_START_UTTERANCE = 'Talk to my test app'
 const DEFAULT_END_UTTERANCE = 'Cancel'
 const OUTPUT_JSON = 'botium.json'
