@@ -1,0 +1,29 @@
+{
+  "name": "convo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "init-google": "botium-connector-google-assistant-init",
+    "test": "mocha spec",
+    "postinstall": "npm run init-google"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "botium-bindings": "^2.0.3"
+  },
+  "botium": {
+    "convodirs": [
+      "spec\\convo"
+    ],
+    "expandConvos": true,
+    "expandUtterancesToConvos": false
+  },
+  "devDependencies": {
+    "mocha": "latest",
+    "botium-bindings": "latest",
+    "botium-connector-google-assistant": "../../"
+  }
+}

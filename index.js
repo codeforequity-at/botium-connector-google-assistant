@@ -1,6 +1,5 @@
 const debug = require('debug')('botium-connector-google-assistant')
 const { ActionsOnGoogle } = require('./src/actions-on-google')
-const _ = require('lodash')
 const util = require('util')
 
 const Capabilities = {

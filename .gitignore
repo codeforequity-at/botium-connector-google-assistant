@@ -66,6 +66,5 @@ typings/
 dist
 
 # configs
-/cfg/googleConfig.json
-/samples/botium.json
-/samples/googleConfig.json
+
+package-lock.json

@@ -13,12 +13,13 @@ __Did you read the [Botium in a Nutshell](https://medium.com/@floriantreml/botiu
 ## How it works ?
 The steps to run a conversation with Google Actions are:
 
-* Configure your action (See steps 1-6 in https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account)
-* If you dont see device registrations while configuring your action, then check 
-https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option or 
-https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4
-* Download credentials
-* Prepare Botium Capabilities
+* Configure your action (See steps 1-4 in https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account)
+    * If you dont see device registrations while configuring your action, then check 
+https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option or https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4
+    * After step 4, continue with _Register Model_ on the Device registration tab
+    * Download the credentials and place them in a file _googleConfig.json_
+* Continue with steps 5 and 6 in the link from above
+* Prepare Botium Capabilities (see next section)
 
 It can be used as any other Botium connector with all Botium Stack components:
 * [Botium CLI](https://github.com/codeforequity-at/botium-cli/)
@@ -43,9 +44,9 @@ When you installed the NPM package for this repository, then run
 > botium-connector-google-actions-init
 ```
 
-When you cloned or downloaded this repository, and you are in the "samples" folder, then run
+When you cloned or downloaded this repository, and you are in the _samples/convo_ folder, then run
 ```
-> npm run init-google-actions
+> npm run init-google
 or
 > ./node_modules/.bin/botium-connector-google-actions-init
 ```
@@ -53,7 +54,7 @@ or
 Just follow the suggested steps, 
 * you will be asked for location of the downloaded credential file
 * you will be presented a hyperlink you have to open in your browser to connect your Action to your Google account. (You have to use the same Google account as for developing the action if action is not published yet. OTHERWISE YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE)
-* you will be asked for start utterance, which activates your action. It is the same what you can see on Actions console simulator (https://console.actions.google.com/project/-your project id->/simulator) IF THIS VALUE IS NOT CORRECT, YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE.
+* you will be asked for start utterance, which activates your action. It is the same what you can see on Actions console simulator (_https://console.actions.google.com/project/your%20project%20id/simulator_) IF THIS VALUE IS NOT CORRECT, YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE.
 * and stop utterance, which deactivates your action.
 
 ### 2. Use the generated botium.json
