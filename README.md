@@ -2,7 +2,7 @@
 
 [![NPM](https://nodei.co/npm/botium-connector-google-assistant.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/botium-connector-google-assistant/)
 
-[ ![Codeship Status for codeforequity-at/botium-connector-google-assistant](https://app.codeship.com/projects/f379ece0-ee76-0136-6e85-5afc45d94643/status?branch=master)](https://app.codeship.com/projects/320125)
+[![Codeship Status for codeforequity-at/botium-connector-google-assistant](https://app.codeship.com/projects/593ff3f0-0215-0137-a1db-3a97ab62e3ba/status?branch=master)](https://app.codeship.com/projects/324985)
 [![npm version](https://badge.fury.io/js/botium-connector-google-assistant.svg)](https://badge.fury.io/js/botium-connector-google-assistant)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
