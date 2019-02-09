@@ -41,14 +41,14 @@ When you are using the Botium CLI, then just run
 
 When you installed the NPM package for this repository, then run
 ```
-> botium-connector-google-actions-init
+> botium-connector-google-assistant-init
 ```
 
 When you cloned or downloaded this repository, and you are in the _samples/convo_ folder, then run
 ```
 > npm run init-google
 or
-> ./node_modules/.bin/botium-connector-google-actions-init
+> ./node_modules/.bin/botium-connector-google-assistant-init
 ```
 
 Just follow the suggested steps, 
@@ -62,7 +62,7 @@ A file named botium.json is generated containing the required capabilities to be
 
 ## Supported Capabilities
 
-Set the capability __CONTAINERMODE__ to __google-actions__ to activate this connector.
+Set the capability __CONTAINERMODE__ to __google-assistant__ to activate this connector.
 
 ### GOOGLE_ASSISTANT_CLIENT_ID
 See downloaded credential file
