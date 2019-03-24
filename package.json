@@ -36,7 +36,7 @@
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "dependencies": {
-    "actions-on-google-testing": "^0.2.4",
+    "actions-on-google-testing": "0.2.4",
     "chai": "^4.2.0",
     "debug": "^3.1.0",
     "jsonutil": "^0.2.0",
