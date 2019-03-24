@@ -60,7 +60,7 @@ class BotiumConnectorGoogleAssistant {
     return this.client.send(messageText)
       .then((response) => {
         debug(`Response: ${util.inspect(response)}`)
-        this.queueBotSays({ sender: 'bot', messageText: response.textToSpeech.join(' ') })
+        setTimeout(() => this.queueBotSays({ sender: 'bot', messageText: response.textToSpeech.join(' ') }), 0)
       })
   }
 
