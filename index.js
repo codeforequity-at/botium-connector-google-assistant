@@ -9,7 +9,9 @@ const Capabilities = {
   GOOGLE_ASSISTANT_REFRESH_TOKEN: 'GOOGLE_ASSISTANT_REFRESH_TOKEN',
   GOOGLE_ASSISTANT_TYPE: 'GOOGLE_ASSISTANT_TYPE',
   GOOGLE_ASSISTANT_START_UTTERANCE: 'GOOGLE_ASSISTANT_START_UTTERANCE',
-  GOOGLE_ASSISTANT_END_UTTERANCE: 'GOOGLE_ASSISTANT_END_UTTERANCE'
+  GOOGLE_ASSISTANT_END_UTTERANCE: 'GOOGLE_ASSISTANT_END_UTTERANCE',
+  GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO: 'GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO',
+  GOOGLE_ASSISTANT_LOG_INCOMING_DATA: 'GOOGLE_ASSISTANT_LOG_INCOMING_DATA'
 }
 
 class BotiumConnectorGoogleAssistant {
@@ -25,18 +27,26 @@ class BotiumConnectorGoogleAssistant {
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN]) throw new Error('GOOGLE_ASSISTANT_REFRESH_TOKEN capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]) throw new Error('GOOGLE_ASSISTANT_TYPE capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]) throw new Error('GOOGLE_ASSISTANT_END_UTTERANCE capability required')
+    if (this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO] !== true) this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO] = false
+    if (this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA] !== true) this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA] = false
 
     return Promise.resolve()
   }
 
   Build () {
     debug('Build called')
-    this.client = new ActionsOnGoogle({
-      client_id: this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_ID],
-      client_secret: this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_SECRET],
-      refresh_token: this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN],
-      type: this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]
-    })
+    this.client = new ActionsOnGoogle(
+      {
+        client_id: this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_ID],
+        client_secret: this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_SECRET],
+        refresh_token: this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN],
+        type: this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]
+      },
+      {
+        logDebugInfo: this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO],
+        logData: this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA]
+      }
+    )
     return Promise.resolve()
   }
 
@@ -47,7 +57,7 @@ class BotiumConnectorGoogleAssistant {
       return this.client.send(this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE])
         .then((response) => {
           if (response.textToSpeech.length === 0) {
-            throw Error(`Empty response, configuration invalid!\n${util.inspect(response)}`)
+            throw Error(`Empty response, configuration, or start utterance ${this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]} invalid!\n${util.inspect(response)}`)
           }
         })
     } else {

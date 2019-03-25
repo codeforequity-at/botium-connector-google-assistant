@@ -21,6 +21,9 @@ const protoFiles = require('google-proto-files')
 const path = require('path')
 const google_auth_library_1 = require('google-auth-library')
 const i18n = require('i18n')
+const debug = require('debug')('botium-connector-google-assistant-actions-on-google')
+const util = require('util')
+
 const SUPPORTED_LOCALES = [
   'en-US', 'fr-FR', 'ja-JP', 'de-DE', 'ko-KR',
   'es-ES', 'pt-BR', 'it-IT', 'ru-RU', 'hi-IN',
@@ -61,7 +64,7 @@ class ActionsOnGoogle {
    * @param credentials Credentials for a given user to make authorized requests
    * @public
    */
-  constructor (credentials) {
+  constructor (credentials, options) {
     /** @hidden */
     this._endpoint = 'embeddedassistant.googleapis.com'
     /** @hidden */
@@ -72,6 +75,8 @@ class ActionsOnGoogle {
     this.deviceInstanceId = 'default'
     this._client = this._createClient(credentials)
     this._locale = DEFAULT_LOCALE
+    this.logDebugInfo = options.logDebugInfo
+    this.logData = options.logData
   }
   /** @hidden */
   _createClient (credentials) {
@@ -283,6 +288,7 @@ class ActionsOnGoogle {
         suggestions: []
       }
       conversation.on('data', (data) => {
+
         if (data.dialog_state_out) {
           this._conversationState = data.dialog_state_out.conversation_state
           if (data.dialog_state_out.supplemental_display_text &&
@@ -296,9 +302,18 @@ class ActionsOnGoogle {
         }
         if (data.debug_info) {
           const debugInfo = JSON.parse(data.debug_info.aog_agent_to_assistant_json)
-          const actionResponse = debugInfo.expectedInputs
+          if (this.logDebugInfo) {
+            debug(`DebugInfo: ${JSON.stringify(debugInfo, null, 2)}`)
+          }
+
+          let actionResponse = debugInfo.expectedInputs
             ? debugInfo.expectedInputs[0].inputPrompt.richInitialPrompt
-            : debugInfo.finalResponse.richResponse
+            : (debugInfo.finalResponse ? debugInfo.finalResponse.richResponse : null)
+          if (!actionResponse) {
+            debug(`Action response is null. Debug info:: ${util.inspect(debugInfo)}`)
+            actionResponse = {items: []}
+          }
+
           assistResponse.micOpen = !!debugInfo.expectUserResponse
           // Process a carouselSelect or listSelect
           const possibleIntents = debugInfo.expectedInputs
