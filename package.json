@@ -39,6 +39,7 @@
     "actions-on-google-testing": "0.2.4",
     "chai": "^4.2.0",
     "debug": "^3.1.0",
+    "google-proto-files": "0.16.1",
     "jsonutil": "^0.2.0",
     "lodash": "^4.17.10",
     "node-version": "^1.2.0",
