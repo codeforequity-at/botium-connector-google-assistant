@@ -1,6 +1,5 @@
 const debug = require('debug')('botium-connector-google-assistant')
 const { ActionsOnGoogle } = require('./src/actions-on-google')
-const _ = require('lodash')
 const util = require('util')
 
 const Capabilities = {
@@ -71,7 +70,7 @@ class BotiumConnectorGoogleAssistant {
     return this.client.send(messageText)
       .then((response) => {
         debug(`Response: ${util.inspect(response)}`)
-        this.queueBotSays({ sender: 'bot', messageText: response.textToSpeech.join(' ') })
+        setTimeout(() => this.queueBotSays({ sender: 'bot', messageText: response.textToSpeech.join(' ') }), 0)
       })
   }
 

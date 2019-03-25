@@ -2,7 +2,7 @@
 
 [![NPM](https://nodei.co/npm/botium-connector-google-assistant.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/botium-connector-google-assistant/)
 
-[ ![Codeship Status for codeforequity-at/botium-connector-google-assistant](https://app.codeship.com/projects/f379ece0-ee76-0136-6e85-5afc45d94643/status?branch=master)](https://app.codeship.com/projects/320125)
+[![Codeship Status for codeforequity-at/botium-connector-google-assistant](https://app.codeship.com/projects/593ff3f0-0215-0137-a1db-3a97ab62e3ba/status?branch=master)](https://app.codeship.com/projects/324985)
 [![npm version](https://badge.fury.io/js/botium-connector-google-assistant.svg)](https://badge.fury.io/js/botium-connector-google-assistant)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
@@ -11,25 +11,57 @@ This is a [Botium](https://github.com/codeforequity-at/botium-core) connector fo
 __Did you read the [Botium in a Nutshell](https://medium.com/@floriantreml/botium-in-a-nutshell-part-1-overview-f8d0ceaf8fb4) articles ? Be warned, without prior knowledge of Botium you won't be able to properly use this library!__
 
 ## How it works ?
-The steps to run a conversation with Google Actions are:
-
-* Configure your action (See steps 1-6 in https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account)
-* If you dont see device registrations while configuring your action, then check 
-https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option or 
-https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4
-* Download credentials
-* Prepare Botium Capabilities
+Botium registers itself with the [Google Assistant SDK](https://developers.google.com/assistant/sdk/overview) as "virtual device" to talk to your Google Action.
 
 It can be used as any other Botium connector with all Botium Stack components:
 * [Botium CLI](https://github.com/codeforequity-at/botium-cli/)
 * [Botium Bindings](https://github.com/codeforequity-at/botium-bindings/)
 * [Botium Box](https://www.botium.at)
 
-## Preparing Botium Capabilities
+## Requirements
+* **Node.js and NPM**
+* a **Google Action**, and user account with administrative rights
+* a **project directory** on your workstation to hold test cases and Botium configuration
+
+## Install Botium and Google Assistant Connector
+
+When using __Botium CLI__:
+
+```
+> npm install -g botium-cli
+> npm install -g botium-connector-google-assistant
+> botium-cli init
+> botium-cli run
+```
+
+When using __Botium Bindings__:
+
+```
+> npm install -g botium-bindings
+> npm install -g botium-connector-google-assistant
+> botium-bindings init mocha
+> npm install && npm run mocha
+```
+
+When using __Botium Box__:
+
+_Already integrated into Botium Box, no setup required_
+
+## Connecting Google Assistant SDK to Botium
+
+### 1. Prepare googleConfig.json
+
+* Configure your action (See steps 1-4 in https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account)
+    * If you dont see device registrations while configuring your action, then check 
+https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option or https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4
+    * After step 4, continue with _Register Model_ on the Device registration tab
+    * Download the credentials and place them in a file _googleConfig.json_
+* Continue with steps 5 and 6 in the link from above
+* Prepare Botium Capabilities (see next section)
+
+### 2. Run the "Botium Connector Google Actions Initialization Tool"
 
 The connector repository includes a tool to compose the Botium capabilities (including private keys, access tokens etc). Create a project directory of your choice, and follow the steps below.
-
-### 1. Run the "Botium Connector Google Actions Initialization Tool"
 
 There are several ways of running this tool, depending on how you installed it:
 
@@ -40,28 +72,36 @@ When you are using the Botium CLI, then just run
 
 When you installed the NPM package for this repository, then run
 ```
-> botium-connector-google-actions-init
+> botium-connector-google-assistant-init
 ```
 
-When you cloned or downloaded this repository, and you are in the "samples" folder, then run
+When you cloned or downloaded this repository, and you are in the _samples/convo_ folder, then run
 ```
-> npm run init-google-actions
+> npm run init-google
 or
-> ./node_modules/.bin/botium-connector-google-actions-init
+> ./node_modules/.bin/botium-connector-google-assistant-init
 ```
 
 Just follow the suggested steps, 
 * you will be asked for location of the downloaded credential file
 * you will be presented a hyperlink you have to open in your browser to connect your Action to your Google account. (You have to use the same Google account as for developing the action if action is not published yet. OTHERWISE YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE)
-* you will be asked for start utterance, which activates your action. It is the same what you can see on Actions console simulator (https://console.actions.google.com/project/-your project id->/simulator) IF THIS VALUE IS NOT CORRECT, YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE.
+* you will be asked for start utterance, which activates your action. It is the same what you can see on Actions console simulator (_https://console.actions.google.com/project/your%20project%20id/simulator_) IF THIS VALUE IS NOT CORRECT, YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE.
 * and stop utterance, which deactivates your action.
 
-### 2. Use the generated botium.json
+### 3. Use the generated botium.json
 A file named botium.json is generated containing the required capabilities to be used with Botium.
+
+To check the configuration, run the emulator (Botium CLI required) to bring up a chat interface in your terminal window:
+
+```
+> botium-cli emulator
+```
+
+Botium setup is ready, you can begin to write your [BotiumScript](https://github.com/codeforequity-at/botium-core/wiki/Botium-Scripting) files.
 
 ## Supported Capabilities
 
-Set the capability __CONTAINERMODE__ to __google-actions__ to activate this connector.
+Set the capability __CONTAINERMODE__ to __google-assistant__ to activate this connector.
 
 ### GOOGLE_ASSISTANT_CLIENT_ID
 See downloaded credential file

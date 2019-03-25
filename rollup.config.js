@@ -20,7 +20,9 @@ export default {
     commonjs({
       exclude: 'node_modules/**'
     }),
-    buble(),
+    buble({
+      transforms: { dangerousForOf: true }
+    }),
     json()
   ]
 }
