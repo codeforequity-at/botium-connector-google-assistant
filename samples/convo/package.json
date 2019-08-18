@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "init-google": "botium-connector-google-assistant-init",
-    "test": "mocha spec",
-    "postinstall": "npm run init-google"
+    "test": "mocha spec"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "botium-bindings": "^2.0.3"
+    "botium-bindings": "^2.0.16"
   },
   "botium": {
     "convodirs": [

@@ -64,7 +64,7 @@ class BotiumConnectorGoogleAssistant {
     }
   }
 
-  UserSays ({messageText}) {
+  UserSays ({ messageText }) {
     debug('UserSays called')
     debug(`Request: ${messageText}`)
     return this.client.send(messageText)
