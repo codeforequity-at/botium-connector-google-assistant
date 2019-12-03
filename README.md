@@ -23,6 +23,36 @@ It can be used as any other Botium connector with all Botium Stack components:
 * a **Google Action**, and user account with administrative rights
 * a **project directory** on your workstation to hold test cases and Botium configuration
 
+## Features
+### Requests
+* Possibility to send button click event
+```
+#me
+BUTTON yes
+```
+### Responses
+* Text asserting support
+* Button asserting support (You see [Suggestion Chips](https://developers.google.com/assistant/conversational/responses#suggestion_chips) of the Google Assistant as buttons)
+```
+#bot
+BUTTONS yes|no|cancel
+```
+* SSML asserting support. You will got the SSML as text message. So you can assert it as normal text:
+```
+#bot
+<speak>Hello <break time='300ms'/> World</speak>
+```
+### Internal
+* Account linking
+    * You can test your action with non-linked user without any change.
+    * If you invoke the account linking process with this non-linked user, nothing happens. You got empty message return, and the account wont be linked
+    * If you perm account linking in Actions console simulator, then you will got a linked user
+    * Tested just on [Account linking with Google Sign-In](https://developers.google.com/actions/identity/google-sign-in)
+    * You can see account linking on https://myaccount.google.com/permissions
+
+
+
+
 ## Install Botium and Google Assistant Connector
 
 When using __Botium CLI__:
@@ -55,7 +85,7 @@ _Already integrated into Botium Box, no setup required_
     * If you dont see device registrations while configuring your action, then check 
 https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option or https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4
     * After step 4, continue with _Register Model_ on the Device registration tab
-    * Download the credentials and place them in a file _googleConfig.json_
+    * Download the credentials and place them in a file _googleConfig.json_ (https://console.developers.google.com/apis/credentials)
 * Continue with steps 5 and 6 in the link from above
 * Prepare Botium Capabilities (see next section)
 
@@ -120,10 +150,3 @@ It is "Talk to my test app" if the name of your app is "my test app", which is t
 
 ### GOOGLE_ASSISTANT_END_UTTERANCE
 Use "Cancel"
-
-## Account linking
-* You can test your action with non-linked user without any change.
-* If you invoke the account linking process with this non-linked user, nothing happens. You got empty message return, and the account wont be linked
-* If you perm account linking in Actions console simulator, then you will got a linked user
-* Tested just on [Account linking with Google Sign-In](https://developers.google.com/actions/identity/google-sign-in)
-* You can see account linking on https://myaccount.google.com/permissions

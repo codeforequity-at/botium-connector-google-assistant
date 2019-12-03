@@ -67,10 +67,37 @@ class BotiumConnectorGoogleAssistant {
   UserSays ({ messageText }) {
     debug('UserSays called')
     debug(`Request: ${messageText}`)
+    const getMessageText = (response) => {
+      if (response.textToSpeech && response.textToSpeech.length) {
+        // TODO /n instead of ' '
+        return response.textToSpeech.join(' ')
+      }
+      // i was not able to mix textToSpeech with ssml
+      // if I wanted to define this as response:
+      // ['hello world', '<speak>Hello World</speak>']
+      // then I got just SSML
+      if (response.ssml && response.ssml.length) {
+        return response.ssml.join('\n')
+      }
+      // just to be sure returning this field too as fallback
+      if (response.displayText && response.displayText.length) {
+        return response.displayText.join('\n')
+      }
+
+      return ''
+    }
+
+    const getButtons = (response) => {
+      if (response.suggestions && response.suggestions.length) {
+        return response.suggestions.map(s => ({ text: s }))
+      }
+      return []
+    }
+
     return this.client.send(messageText)
       .then((response) => {
         debug(`Response: ${util.inspect(response)}`)
-        setTimeout(() => this.queueBotSays({ sender: 'bot', messageText: response.textToSpeech.join(' ') }), 0)
+        setTimeout(() => this.queueBotSays({ sender: 'bot', messageText: getMessageText(response), buttons: getButtons(response) }), 0)
       })
   }
 
