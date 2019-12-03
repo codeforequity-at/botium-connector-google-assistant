@@ -43,6 +43,7 @@
     "i18n": "^0.8.3",
     "jsonutil": "^0.2.0",
     "lodash": "^4.17.15",
+    "mime-types": "^2.1.25",
     "node-version": "^1.2.0",
     "readline-sync": "^1.4.10"
   }

@@ -1,6 +1,7 @@
 const debug = require('debug')('botium-connector-google-assistant')
 const { ActionsOnGoogle } = require('./src/actions-on-google')
 const util = require('util')
+const mime = require('mime-types')
 
 const Capabilities = {
   GOOGLE_ASSISTANT_CLIENT_ID: 'GOOGLE_ASSISTANT_CLIENT_ID',
@@ -94,10 +95,29 @@ class BotiumConnectorGoogleAssistant {
       return []
     }
 
+    const getMedia = (response) => {
+      const m = response.mediaResponse
+
+      if (m) {
+        const mediaUri = (m.largeImage || m.icon)
+        return [{
+          mediaUri,
+          mimeType: mime.lookup(mediaUri) || 'application/unknown',
+          altText: m.name || m.description
+        }]
+      }
+      return []
+    }
+
     return this.client.send(messageText)
       .then((response) => {
         debug(`Response: ${util.inspect(response)}`)
-        setTimeout(() => this.queueBotSays({ sender: 'bot', messageText: getMessageText(response), buttons: getButtons(response) }), 0)
+        setTimeout(() => this.queueBotSays({
+          sender: 'bot',
+          messageText: getMessageText(response),
+          buttons: getButtons(response),
+          media: getMedia(response)
+        }), 0)
       })
   }
 

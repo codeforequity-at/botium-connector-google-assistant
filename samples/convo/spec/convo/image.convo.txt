@@ -1,0 +1,7 @@
+image
+
+#me
+image
+
+#bot
+MEDIA https://www.botium.at/images/logo.png
