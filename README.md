@@ -25,24 +25,37 @@ It can be used as any other Botium connector with all Botium Stack components:
 
 ## Features
 ### Requests
-* Possibility to send button click event
+* Sending button click event
 ```
 #me
 BUTTON yes
 ```
-### Responses
-* Text asserting support
-* Suggestion Chips asserting support
+### [Botium Asserters](https://botium.atlassian.net/wiki/spaces/BOTIUM/pages/2293815/Botium+Asserters) to check response 
+* Text asserting
+* Button asserting (for [Suggestion Chips](https://developers.google.com/assistant/conversational/responses#suggestion_chips), for [Link Out Suggestion](https://developers.google.com/assistant/conversational/reference/rest/Shared.Types/AppResponse#linkoutsuggestion), and for buttons of complex UI elements)
 ```
 #bot
 BUTTONS yes|no|cancel
 ```
-* SSML asserting support
+* Media asserting (for [Media Responses](https://developers.google.com/assistant/conversational/responses#media_responses), and for image/media of complex UI elements)
+ ```
+#bot
+MEDIA https://www.botium.at/images/logo.png
+```
+* SSML asserting
 ```
 #bot
 <speak>Hello <break time='300ms'/> World</speak>
 ```
-* Media asserting support. Media is not a standalone UI element, works just with Simple Response, and Suggestion Chips.
+* Card asserting. For Basic Card, Carousel, Browse Carousel, List, and Table components. With list you can assert title too
+ ```
+#bot
+Title of List
+CARDS First|Second
+```
+
+
+* Asserting response containing more UI elements. For example Media Response is not a standalone UI element, works just with Simple Response, and Suggestion Chips.
  They can be asserted together:
  ```
 #bot
@@ -50,15 +63,13 @@ simple response
 MEDIA https://www.botium.at/images/logo.png
 BUTTONS button1|button2
 ```
-* Card asserting support
 
-### Internal
-* Account linking
-    * You can test your action with non-linked user without any change.
-    * If you invoke the account linking process with this non-linked user, nothing happens. You got empty message return, and the account wont be linked
-    * If you perm account linking in Actions console simulator, then you will got a linked user
-    * Tested just on [Account linking with Google Sign-In](https://developers.google.com/actions/identity/google-sign-in)
-    * You can see account linking on https://myaccount.google.com/permissions
+### Account linking
+* You can test your action with non-linked user without any change.
+* If you invoke the account linking process with this non-linked user, nothing happens. You got empty message return, and the account wont be linked
+* If you perm account linking in Actions console simulator, then you will got a linked user
+* Tested just on [Account linking with Google Sign-In](https://developers.google.com/actions/identity/google-sign-in)
+* You can see account linking on https://myaccount.google.com/permissions
 
 
 

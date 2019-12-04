@@ -75,11 +75,42 @@ class BotiumConnectorGoogleAssistant {
           return {
             text: c.title || c.subtitle || c.text,
             image: c.imageUrl && {
-              mediaUrl: c.imageUrl,
+              mediaUri: c.imageUrl,
               mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
               altText: c.imageAltText
             },
             buttons: c.buttons && c.buttons.map(b => ({ text: b.title, payload: b.url }))
+          }
+        }))
+      }
+      if (response.carousel) {
+        result = result.concat(response.carousel.map(c => {
+          return {
+            text: c.title || c.description || c.text,
+            image: c.imageUrl && {
+              mediaUri: c.imageUrl,
+              mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
+              altText: c.imageAltText
+            }
+          }
+        }))
+      }
+      if (response.list && response.list.items) {
+        result = result.concat(response.list.items.map(c => {
+          return {
+            text: c.title || c.description || c.text,
+            image: c.imageUrl && {
+              mediaUri: c.imageUrl,
+              mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
+              altText: c.imageAltText
+            }
+          }
+        }))
+      }
+      if (response.table && response.table.headers) {
+        result = result.concat(response.table.headers.map(h => {
+          return {
+            text: h
           }
         }))
       }
@@ -101,14 +132,23 @@ class BotiumConnectorGoogleAssistant {
         result = result.concat(response.displayText)
       }
 
+      if (response.list && response.list.title) {
+        result.push(response.list.title)
+      }
+
       return result.join('\n')
     }
 
     const getButtons = (response) => {
-      if (response.suggestions && response.suggestions.length) {
-        return response.suggestions.map(s => ({ text: s }))
+      let result = []
+      if (response.suggestions) {
+        result = result.concat(response.suggestions.map(s => ({ text: s })))
       }
-      return []
+      if (response.linkOutSuggestion) {
+        result.push({ text: response.linkOutSuggestion.name, payload: response.linkOutSuggestion.url })
+      }
+
+      return result
     }
 
     const getMedia = (response) => {
