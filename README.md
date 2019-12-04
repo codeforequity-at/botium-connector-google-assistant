@@ -150,6 +150,17 @@ To check the configuration, run the emulator (Botium CLI required) to bring up a
 
 Botium setup is ready, you can begin to write your [BotiumScript](https://github.com/codeforequity-at/botium-core/wiki/Botium-Scripting) files.
 
+## How to start sample
+
+There is a small tech demo in [samples/convo](./samples/convo) with Botium Bindings. You can see there how to deal with different UI elements.
+
+Before start create botium.json, and use [this](./samples/convo/connectortesttarget.zip) as Dialogflow project.
+
+Start the test with:
+
+    > npm install
+    > npm test
+
 ## Supported Capabilities
 
 Set the capability __CONTAINERMODE__ to __google-assistant__ to activate this connector.
