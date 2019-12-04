@@ -68,24 +68,40 @@ class BotiumConnectorGoogleAssistant {
   UserSays ({ messageText }) {
     debug('UserSays called')
     debug(`Request: ${messageText}`)
-    const getMessageText = (response) => {
-      if (response.textToSpeech && response.textToSpeech.length) {
-        // TODO /n instead of ' '
-        return response.textToSpeech.join(' ')
+    const getCards = (response) => {
+      let result = []
+      if (response.cards) {
+        result = result.concat(response.cards.map(c => {
+          return {
+            text: c.title || c.subtitle || c.text,
+            image: c.imageUrl && {
+              mediaUrl: c.imageUrl,
+              mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
+              altText: c.imageAltText
+            },
+            buttons: c.buttons && c.buttons.map(b => ({ text: b.title, payload: b.url }))
+          }
+        }))
       }
-      // i was not able to mix textToSpeech with ssml
-      // if I wanted to define this as response:
-      // ['hello world', '<speak>Hello World</speak>']
-      // then I got just SSML
+
+      return result
+    }
+
+    const getMessageText = (response) => {
+      let result = []
+      if (response.textToSpeech && response.textToSpeech.length) {
+        result = result.concat(response.textToSpeech)
+      }
+
       if (response.ssml && response.ssml.length) {
-        return response.ssml.join('\n')
+        result = result.concat(response.ssml)
       }
       // just to be sure returning this field too as fallback
       if (response.displayText && response.displayText.length) {
-        return response.displayText.join('\n')
+        result = result.concat(response.displayText)
       }
 
-      return ''
+      return result.join('\n')
     }
 
     const getButtons = (response) => {
@@ -116,7 +132,8 @@ class BotiumConnectorGoogleAssistant {
           sender: 'bot',
           messageText: getMessageText(response),
           buttons: getButtons(response),
-          media: getMedia(response)
+          media: getMedia(response),
+          cards: getCards(response)
         }), 0)
       })
   }

@@ -32,16 +32,26 @@ BUTTON yes
 ```
 ### Responses
 * Text asserting support
-* Button asserting support (You see [Suggestion Chips](https://developers.google.com/assistant/conversational/responses#suggestion_chips) of the Google Assistant as buttons)
+* Suggestion Chips asserting support
 ```
 #bot
 BUTTONS yes|no|cancel
 ```
-* SSML asserting support. You will got the SSML as text message. So you can assert it as normal text:
+* SSML asserting support
 ```
 #bot
 <speak>Hello <break time='300ms'/> World</speak>
 ```
+* Media asserting support. Media is not a standalone UI element, works just with Simple Response, and Suggestion Chips.
+ They can be asserted together:
+ ```
+#bot
+simple response
+MEDIA https://www.botium.at/images/logo.png
+BUTTONS button1|button2
+```
+* Card asserting support
+
 ### Internal
 * Account linking
     * You can test your action with non-linked user without any change.

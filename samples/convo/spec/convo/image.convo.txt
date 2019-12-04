@@ -4,4 +4,6 @@ image
 image
 
 #bot
+simple response
 MEDIA https://www.botium.at/images/logo.png
+BUTTONS button1|button2
