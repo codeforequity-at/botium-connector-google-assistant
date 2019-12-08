@@ -1,6 +1,7 @@
 const debug = require('debug')('botium-connector-google-assistant')
 const { ActionsOnGoogle } = require('./src/actions-on-google')
 const util = require('util')
+const mime = require('mime-types')
 
 const Capabilities = {
   GOOGLE_ASSISTANT_CLIENT_ID: 'GOOGLE_ASSISTANT_CLIENT_ID',
@@ -67,10 +68,115 @@ class BotiumConnectorGoogleAssistant {
   UserSays ({ messageText }) {
     debug('UserSays called')
     debug(`Request: ${messageText}`)
+    const getCards = (response) => {
+      let result = []
+      if (response.cards) {
+        result = result.concat(response.cards.map(c => {
+          return {
+            text: c.title || c.subtitle || c.text,
+            subtext: c.subtitle,
+            content: c.text,
+            image: c.imageUrl && {
+              mediaUri: c.imageUrl,
+              mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
+              altText: c.imageAltText
+            },
+            buttons: c.buttons && c.buttons.map(b => ({ text: b.title, payload: b.url }))
+          }
+        }))
+      }
+      if (response.carousel) {
+        result = result.concat(response.carousel.map(c => {
+          return {
+            text: c.title || c.description || c.text,
+            image: c.imageUrl && {
+              mediaUri: c.imageUrl,
+              mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
+              altText: c.imageAltText
+            }
+          }
+        }))
+      }
+      if (response.list && response.list.items) {
+        result = result.concat(response.list.items.map(c => {
+          return {
+            text: c.title || c.description || c.text,
+            image: c.imageUrl && {
+              mediaUri: c.imageUrl,
+              mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
+              altText: c.imageAltText
+            }
+          }
+        }))
+      }
+      if (response.table && response.table.headers) {
+        result = result.concat(response.table.headers.map(h => {
+          return {
+            text: h
+          }
+        }))
+      }
+
+      return result
+    }
+
+    const getMessageText = (response) => {
+      let result = []
+      if (response.textToSpeech && response.textToSpeech.length) {
+        result = result.concat(response.textToSpeech)
+      }
+
+      if (response.ssml && response.ssml.length) {
+        result = result.concat(response.ssml)
+      }
+      // just to be sure returning this field too as fallback
+      if (response.displayText && response.displayText.length) {
+        result = result.concat(response.displayText)
+      }
+
+      if (response.list && response.list.title) {
+        result.push(response.list.title)
+      }
+
+      return result.join('\n')
+    }
+
+    const getButtons = (response) => {
+      let result = []
+      if (response.suggestions) {
+        result = result.concat(response.suggestions.map(s => ({ text: s })))
+      }
+      if (response.linkOutSuggestion) {
+        result.push({ text: response.linkOutSuggestion.name, payload: response.linkOutSuggestion.url })
+      }
+
+      return result
+    }
+
+    const getMedia = (response) => {
+      const m = response.mediaResponse
+
+      if (m) {
+        const mediaUri = (m.largeImage || m.icon)
+        return [{
+          mediaUri,
+          mimeType: mime.lookup(mediaUri) || 'application/unknown',
+          altText: m.name || m.description
+        }]
+      }
+      return []
+    }
+
     return this.client.send(messageText)
       .then((response) => {
         debug(`Response: ${util.inspect(response)}`)
-        setTimeout(() => this.queueBotSays({ sender: 'bot', messageText: response.textToSpeech.join(' ') }), 0)
+        setTimeout(() => this.queueBotSays({
+          sender: 'bot',
+          messageText: getMessageText(response),
+          buttons: getButtons(response),
+          media: getMedia(response),
+          cards: getCards(response)
+        }), 0)
       })
   }
 

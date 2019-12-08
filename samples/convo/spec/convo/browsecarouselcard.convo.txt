@@ -1,0 +1,9 @@
+browse carousel card
+
+#me
+browse carousel card
+
+#bot
+Simple Response
+CARDS Title|Title 2
+MEDIA https://www.botium.at/images/logo.png

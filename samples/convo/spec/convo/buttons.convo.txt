@@ -1,0 +1,14 @@
+buttons
+
+#me
+button
+
+#bot
+Default response of send buttons suggestions:
+BUTTONS Item1|Item2|Item3
+
+#me
+BUTTON item1
+
+#bot
+Item1 choosen

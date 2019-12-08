@@ -23,27 +23,28 @@
   },
   "homepage": "https://github.com/codeforequity-at/botium-connector-google-assistant#readme",
   "devDependencies": {
-    "eslint": "^6.1.0",
-    "eslint-config-standard": "^13.0.1",
+    "eslint": "^6.7.2",
+    "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "rollup": "^1.19.4",
+    "eslint-plugin-standard": "^4.0.1",
+    "rollup": "^1.27.9",
     "rollup-plugin-buble": "^0.19.8",
-    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0"
   },
   "dependencies": {
     "debug": "^4.1.1",
-    "google-auth-library": "^5.2.0",
+    "google-auth-library": "^5.6.1",
     "google-proto-files": "^0.16.1",
-    "grpc": "^1.22.2",
-    "i18n": "^0.8.3",
+    "grpc": "^1.24.2",
+    "i18n": "^0.8.4",
     "jsonutil": "^0.2.0",
     "lodash": "^4.17.15",
-    "node-version": "^1.2.0",
+    "mime-types": "^2.1.25",
+    "node-version": "^2.0.0",
     "readline-sync": "^1.4.10"
   }
 }

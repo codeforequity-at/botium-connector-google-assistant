@@ -1,0 +1,9 @@
+list
+
+#me
+list
+
+#bot
+Title
+CARDS Item title|title2
+MEDIA https://www.botium.at/images/logo.png

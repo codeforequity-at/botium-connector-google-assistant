@@ -1,0 +1,7 @@
+ssml
+
+#me
+ssml
+
+#bot
+<speak>Hello <break time='300ms'/> World</speak>
