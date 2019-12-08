@@ -74,6 +74,8 @@ class BotiumConnectorGoogleAssistant {
         result = result.concat(response.cards.map(c => {
           return {
             text: c.title || c.subtitle || c.text,
+            subtext: c.subtitle,
+            content: c.text,
             image: c.imageUrl && {
               mediaUri: c.imageUrl,
               mimeType: mime.lookup(c.imageUrl) || 'application/unknown',
