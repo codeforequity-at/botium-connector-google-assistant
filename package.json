@@ -36,11 +36,8 @@
     "rollup-plugin-node-resolve": "^5.2.0"
   },
   "dependencies": {
+    "actions-on-google-testing": "^0.3.0",
     "debug": "^4.1.1",
-    "google-auth-library": "^5.6.1",
-    "google-proto-files": "^0.16.1",
-    "grpc": "^1.24.2",
-    "i18n": "^0.8.4",
     "jsonutil": "^0.2.0",
     "lodash": "^4.17.15",
     "mime-types": "^2.1.25",
