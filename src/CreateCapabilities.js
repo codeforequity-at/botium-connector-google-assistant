@@ -26,7 +26,7 @@ const _extractArgs = () => {
   } while (!result.googleConfig)
 
   // if (readlineSync.question(`\nFile ${OUTPUT_JSON} already exists. Continue? [Y/n] `, {limit: /(y|n|)/}) === 'n') {
-  result.useStartUtterance = readlineSync.question(`\nUse start utterance like "${DEFAULT_START_UTTERANCE}" to activate action? [Y/n] `, {limit: /(y|n|)/}) !== 'n'
+  result.useStartUtterance = readlineSync.question(`\nUse start utterance like "${DEFAULT_START_UTTERANCE}" to activate action? [Y/n] `, { limit: /(y|n|)/ }) !== 'n'
 
   if (result.useStartUtterance) {
     result.startUtterance = readlineSync.question(`\nStart utterance? (${DEFAULT_START_UTTERANCE}) `, {
@@ -69,11 +69,11 @@ const _authorize = (args) => {
 
   console.log(url)
 
-  const code = readlineSync.question(`Authorization code? `)
+  const code = readlineSync.question('Authorization code? ')
 
   // Use this code to obtain a refresh token
   return oauth2Client.getToken(code)
-    .then(({tokens}) => tokens)
+    .then(({ tokens }) => tokens)
 }
 
 const _createCapabilities = (args, authResult) => {
@@ -92,7 +92,7 @@ const _createCapabilities = (args, authResult) => {
 const _main = async () => {
   // 1) does json already exist?
   if (fs.existsSync(OUTPUT_JSON)) {
-    if (readlineSync.question(`\nFile ${OUTPUT_JSON} already exists. Continue? [Y/n] `, {limit: /(y|n|)/}) === 'n') {
+    if (readlineSync.question(`\nFile ${OUTPUT_JSON} already exists. Continue? [Y/n] `, { limit: /(y|n|)/ }) === 'n') {
       console.log('\n\nexiting....')
       return
     }
@@ -106,10 +106,10 @@ const _main = async () => {
   console.log(`\nToken acquired: \n${util.inspect(authResult)}`)
 
   // 5) create capabilities.
-  let caps = _createCapabilities(args, authResult)
+  const caps = _createCapabilities(args, authResult)
   const asString = JSON.stringify(caps, null, 2)
   console.log(`\nBotium Capabilities (to use for copy & paste):\n ${asString}`)
-  if (!fs.existsSync(OUTPUT_JSON) || readlineSync.question(`\nFile ${OUTPUT_JSON} already exists. Overwrite? [y/N] `, {limit: /(y|n|)/}) === 'y') {
+  if (!fs.existsSync(OUTPUT_JSON) || readlineSync.question(`\nFile ${OUTPUT_JSON} already exists. Overwrite? [y/N] `, { limit: /(y|n|)/ }) === 'y') {
     const botiumJsonAsString = JSON.stringify({
       botium: {
         Capabilities: caps
@@ -121,13 +121,13 @@ const _main = async () => {
   }
 
   // 6) validating capabilities.
-  console.log(`\nValidating Capabilities...`)
-  const connector = new BotiumConnectorGoogleAssistant({queueBotSays: () => {}, caps})
+  console.log('\nValidating Capabilities...')
+  const connector = new BotiumConnectorGoogleAssistant({ queueBotSays: () => {}, caps })
   try {
     connector.Validate()
     await connector.Build()
     await connector.Start()
-    console.log(`\nCapabilities are valid`)
+    console.log('\nCapabilities are valid')
   } catch (error) {
     console.log(error.toString())
   }

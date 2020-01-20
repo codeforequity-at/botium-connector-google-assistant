@@ -122,7 +122,6 @@ const cleanResponse = (response) => {
   return { response, audioOut, screenOutHtml }
 }
 
-
 class BotiumConnectorGoogleAssistant {
   constructor ({ queueBotSays, caps }) {
     this.queueBotSays = queueBotSays
@@ -142,7 +141,7 @@ class BotiumConnectorGoogleAssistant {
     return Promise.resolve()
   }
 
-  async Build() {
+  async Build () {
   }
 
   async Start () {
@@ -189,14 +188,14 @@ class BotiumConnectorGoogleAssistant {
 
     if (audioOut) {
       botMsg.attachments.push({
-        name: `google-assistant-response.mp3`,
+        name: 'google-assistant-response.mp3',
         mimeType: 'audio/mpeg',
         base64: audioOut.toString('base64')
       })
     }
     if (screenOutHtml) {
       botMsg.attachments.push({
-        name: `google-assistant-screen.html`,
+        name: 'google-assistant-screen.html',
         mimeType: 'text/html',
         base64: Buffer.from(screenOutHtml).toString('base64')
       })
@@ -215,7 +214,7 @@ class BotiumConnectorGoogleAssistant {
     this.client = null
   }
 
-  async Clean() {
+  async Clean () {
   }
 }
 
