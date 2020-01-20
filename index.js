@@ -132,8 +132,11 @@ class BotiumConnectorGoogleAssistant {
     return Promise.resolve()
   }
 
-  Build () {
-    debug('Build called')
+  async Build() {
+  }
+
+  async Start () {
+    debug('Start called')
     this.client = new ActionsOnGoogle(
       {
         client_id: this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_ID],
@@ -146,56 +149,46 @@ class BotiumConnectorGoogleAssistant {
         logData: this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA]
       }
     )
-    return Promise.resolve()
-  }
-
-  Start () {
-    debug('Start called')
+    this.client._isNewConversation = true
     // client has start function too, but it uses i18n, which is not well configurable
     if (this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) {
       const startUtterance = this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]
       debug(`Sending start utterance: ${startUtterance}`)
-      return this.client.send(startUtterance)
-        .then((response) => {
-          const messageText = getMessageText(response)
-          if (messageText) {
-            debug(`Received start response: ${messageText}`)
-          } else {
-            throw Error(`Empty response, configuration, or start utterance "${startUtterance}" invalid!\n${util.inspect(response)}`)
-          }
-        })
-    } else {
-      return Promise.resolve()
+      const response = await this.client.send(startUtterance)
+      debug(`Received start response: ${util.inspect(response)}`)
+      this.client._isNewConversation = false
     }
   }
 
-  UserSays ({ messageText }) {
+  async UserSays ({ messageText }) {
     debug('UserSays called')
     debug(`Request: ${messageText}`)
 
-    return this.client.send(messageText)
-      .then((response) => {
-        debug(`Response: ${util.inspect(response)}`)
-        setTimeout(() => this.queueBotSays({
-          sender: 'bot',
-          messageText: getMessageText(response),
-          buttons: getButtons(response),
-          media: getMedia(response),
-          cards: getCards(response)
-        }), 0)
-      })
+    const response = await this.client.send(messageText)
+    debug(`Response: ${util.inspect(response)}`)
+    this.client._isNewConversation = false
+    setTimeout(() => this.queueBotSays({
+      sender: 'bot',
+      messageText: getMessageText(response),
+      buttons: getButtons(response),
+      media: getMedia(response),
+      cards: getCards(response),
+      sourceData: response
+    }), 0)
   }
 
-  Stop () {
+  async Stop () {
     debug('Stop called')
-    return this.client.send(this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE])
+    if (this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]) {
+      const endUtterance = this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]
+      debug(`Sending end utterance: ${endUtterance}`)
+      const response = await this.client.send(endUtterance)
+      debug(`Received end response: ${util.inspect(response)}`)
+    }
+    this.client = null
   }
 
-  Clean () {
-    debug('Clean called')
-
-    this.credentials = null
-    return Promise.resolve()
+  async Clean() {
   }
 }
 
