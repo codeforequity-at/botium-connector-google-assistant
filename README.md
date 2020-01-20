@@ -13,6 +13,8 @@ __Did you read the [Botium in a Nutshell](https://medium.com/@floriantreml/botiu
 ## How it works ?
 Botium registers itself with the [Google Assistant SDK](https://developers.google.com/assistant/sdk/overview) as "virtual device" to talk to your Google Action.
 
+**IMPORTANT: The Google Assistant SDK this Botium connector is buildling upon is currently in ALPHA state and not considered to be ready for production use**
+
 It can be used as any other Botium connector with all Botium Stack components:
 * [Botium CLI](https://github.com/codeforequity-at/botium-cli/)
 * [Botium Bindings](https://github.com/codeforequity-at/botium-bindings/)
@@ -71,9 +73,6 @@ BUTTONS button1|button2
 * Tested just on [Account linking with Google Sign-In](https://developers.google.com/actions/identity/google-sign-in)
 * You can see account linking on https://myaccount.google.com/permissions
 
-
-
-
 ## Install Botium and Google Assistant Connector
 
 When using __Botium CLI__:
@@ -102,9 +101,8 @@ _Already integrated into Botium Box, no setup required_
 
 ### 1. Prepare googleConfig.json
 
-* Configure your action (See steps 1-4 in https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account)
-    * If you dont see device registrations while configuring your action, then check 
-https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option or https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4
+* Configure your action (See steps 1-4 [here](https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account))
+    * If you dont see device registrations while configuring your action, then check [this](https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option) or [this](https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4)
     * After step 4, continue with _Register Model_ on the Device registration tab
     * Download the credentials and place them in a file _googleConfig.json_ (https://console.developers.google.com/apis/credentials)
 * Continue with steps 5 and 6 in the link from above
@@ -123,14 +121,14 @@ When you are using the Botium CLI, then just run
 
 When you installed the NPM package for this repository, then run
 ```
-> botium-connector-google-assistant-init
+> npx botium-connector-google-assistant-init
 ```
 
 When you cloned or downloaded this repository, and you are in the _samples/convo_ folder, then run
 ```
 > npm run init-google
 or
-> ./node_modules/.bin/botium-connector-google-assistant-init
+> npx botium-connector-google-assistant-init
 ```
 
 Follow the suggested steps:
