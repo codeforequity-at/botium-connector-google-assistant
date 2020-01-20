@@ -113,6 +113,16 @@ const getMedia = (response) => {
   return []
 }
 
+const cleanResponse = (response) => {
+  const audioOut = response.audioOut
+  const screenOutHtml = response.screenOutHtml
+  delete response.audioOut
+  delete response.screenOutHtml
+
+  return { response, audioOut, screenOutHtml }
+}
+
+
 class BotiumConnectorGoogleAssistant {
   constructor ({ queueBotSays, caps }) {
     this.queueBotSays = queueBotSays
@@ -154,27 +164,44 @@ class BotiumConnectorGoogleAssistant {
     if (this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) {
       const startUtterance = this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]
       debug(`Sending start utterance: ${startUtterance}`)
-      const response = await this.client.send(startUtterance)
+      const { response } = cleanResponse(await this.client.send(startUtterance))
       debug(`Received start response: ${util.inspect(response)}`)
       this.client._isNewConversation = false
     }
   }
 
   async UserSays ({ messageText }) {
-    debug('UserSays called')
     debug(`Request: ${messageText}`)
 
-    const response = await this.client.send(messageText)
-    debug(`Response: ${util.inspect(response)}`)
+    const { response, audioOut, screenOutHtml } = cleanResponse(await this.client.send(messageText))
+    debug(`Response (without audioOut and screenOut): ${util.inspect(response)}`)
     this.client._isNewConversation = false
-    setTimeout(() => this.queueBotSays({
+
+    const botMsg = {
       sender: 'bot',
       messageText: getMessageText(response),
       buttons: getButtons(response),
       media: getMedia(response),
       cards: getCards(response),
-      sourceData: response
-    }), 0)
+      sourceData: response,
+      attachments: []
+    }
+
+    if (audioOut) {
+      botMsg.attachments.push({
+        name: `google-assistant-response.mp3`,
+        mimeType: 'audio/mpeg',
+        base64: audioOut.toString('base64')
+      })
+    }
+    if (screenOutHtml) {
+      botMsg.attachments.push({
+        name: `google-assistant-screen.html`,
+        mimeType: 'text/html',
+        base64: Buffer.from(screenOutHtml).toString('base64')
+      })
+    }
+    setTimeout(() => this.queueBotSays(botMsg), 0)
   }
 
   async Stop () {
@@ -182,7 +209,7 @@ class BotiumConnectorGoogleAssistant {
     if (this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]) {
       const endUtterance = this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]
       debug(`Sending end utterance: ${endUtterance}`)
-      const response = await this.client.send(endUtterance)
+      const { response } = cleanResponse(await this.client.send(endUtterance))
       debug(`Received end response: ${util.inspect(response)}`)
     }
     this.client = null
