@@ -1,6 +1,0 @@
-{
-  "cancel": "cancel",
-  "my_test_app": "estappen min",
-  "start_conversation": "Snakke med {{app_name}}",
-  "start_conversation_with_prompt": "Snakk med {{app_name}} om {{prompt}}"
-}

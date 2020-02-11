@@ -1,6 +1,0 @@
-{
-  "cancel": "cancel",
-  "my_test_app": "テスト用アプリ",
-  "start_conversation": "{{app_name}}につないで",
-  "start_conversation_with_prompt": "{{app_name}}につないで、{{prompt}}"
-}

@@ -1,6 +1,0 @@
-{
-  "cancel": "cancel",
-  "my_test_app": "aplikasi uji saya",
-  "start_conversation": "Bicara dengan {{app_name}}",
-  "start_conversation_with_prompt": "Bicara dengan {{app_name}} {{prompt}}"
-}

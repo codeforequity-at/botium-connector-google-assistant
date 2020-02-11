@@ -56,7 +56,6 @@ Title of List
 CARDS First|Second
 ```
 
-
 * Asserting response containing more UI elements. For example Media Response is not a standalone UI element, works just with Simple Response, and Suggestion Chips.
  They can be asserted together:
  ```
@@ -99,14 +98,13 @@ _Already integrated into Botium Box, no setup required_
 
 ## Connecting Google Assistant SDK to Botium
 
-### 1. Prepare googleConfig.json
+### 1. Prepare googleConfig.json (Google credentials)
 
-* Configure your action (See steps 1-4 [here](https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account))
+* Configure an Actions Console project (See [here](https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account))
+* Register a Device Model (See [here](https://developers.google.com/assistant/sdk/guides/service/python/embed/register-device)) and download the OAuth 2.0 credentials file
+    * Rename the file to _googleConfig.json_
+    * You can download the credentials [here](https://console.developers.google.com/apis/credentials) as well
     * If you dont see device registrations while configuring your action, then check [this](https://stackoverflow.com/questions/50313261/actions-on-google-not-showing-device-registration-option) or [this](https://github.com/actions-on-google/actions-on-google-testing-nodejs/issues/4)
-    * After step 4, continue with _Register Model_ on the Device registration tab
-    * Download the credentials and place them in a file _googleConfig.json_ (https://console.developers.google.com/apis/credentials)
-* Continue with steps 5 and 6 in the link from above
-* Prepare Botium Capabilities (see next section)
 
 ### 2. Run the "Botium Connector Google Actions Initialization Tool"
 
@@ -134,7 +132,7 @@ or
 Follow the suggested steps:
 * you will be asked for location of the downloaded credential file
 * you will be presented a hyperlink you have to open in your browser to connect your Action to your Google account. (You have to use the same Google account as for developing the action if action is not published yet. OTHERWISE YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE)
-* you will be asked for start utterance, which activates your action. It is the same what you can see on Actions console simulator (_https://console.actions.google.com/project/your%20project%20id/simulator_) IF THIS VALUE IS NOT CORRECT, YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE.
+* you will be asked for start utterance, which activates your action. It is the same what you can see on Actions console simulator (_https://console.actions.google.com/project/YOURPROJECTID/simulator_) IF THIS VALUE IS NOT CORRECT, YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE.
 * and stop utterance, which deactivates your action.
 
 ### 3. Use the generated botium.json
