@@ -157,6 +157,41 @@ Start the test with:
     > npm install
     > npm test
 
+## Setting Location for Test Cases
+
+Either set global with capabilities _GOOGLE_ASSISTANT_LOCATION_LATITUDE_ and _GOOGLE_ASSISTANT_LOCATION_LONGITUDE_ (see below).
+
+Or with the _UPDATE_CUSTOM_ logic hook in BotiumScript:
+
+
+```
+location
+
+#begin
+UPDATE_CUSTOM LOCATION|LATITUDE|48.210033
+UPDATE_CUSTOM LOCATION|LONGITUDE|16.363449
+
+#me
+hi
+
+#bot
+...
+```
+
+Or for individual conversation steps (if this makes sense at all to switch location within a conversation ...):
+
+```
+location
+
+#me
+hi
+UPDATE_CUSTOM LOCATION|LATITUDE|48.210033
+UPDATE_CUSTOM LOCATION|LONGITUDE|16.363449
+
+#bot
+...
+```
+
 ## Supported Capabilities
 
 Set the capability __CONTAINERMODE__ to __google-assistant__ to activate this connector.
@@ -178,3 +213,9 @@ It is "Talk to my test app" if the name of your app is "my test app", which is t
 
 ### GOOGLE_ASSISTANT_END_UTTERANCE
 Use "Cancel"
+
+### GOOGLE_ASSISTANT_LOCATION_LATITUDE
+Location latitude
+
+### GOOGLE_ASSISTANT_LOCATION_LONGITUDE
+Location longitude

@@ -10,8 +10,8 @@ const Capabilities = {
   GOOGLE_ASSISTANT_TYPE: 'GOOGLE_ASSISTANT_TYPE',
   GOOGLE_ASSISTANT_START_UTTERANCE: 'GOOGLE_ASSISTANT_START_UTTERANCE',
   GOOGLE_ASSISTANT_END_UTTERANCE: 'GOOGLE_ASSISTANT_END_UTTERANCE',
-  GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO: 'GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO',
-  GOOGLE_ASSISTANT_LOG_INCOMING_DATA: 'GOOGLE_ASSISTANT_LOG_INCOMING_DATA'
+  GOOGLE_ASSISTANT_LOCATION_LATITUDE: 'GOOGLE_ASSISTANT_LOCATION_LATITUDE',
+  GOOGLE_ASSISTANT_LOCATION_LONGITUDE: 'GOOGLE_ASSISTANT_LOCATION_LONGITUDE'
 }
 
 const getCards = (response) => {
@@ -135,8 +135,6 @@ class BotiumConnectorGoogleAssistant {
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN]) throw new Error('GOOGLE_ASSISTANT_REFRESH_TOKEN capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]) throw new Error('GOOGLE_ASSISTANT_TYPE capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]) throw new Error('GOOGLE_ASSISTANT_END_UTTERANCE capability required')
-    if (this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO] !== true) this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO] = false
-    if (this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA] !== true) this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA] = false
 
     return Promise.resolve()
   }
@@ -152,10 +150,6 @@ class BotiumConnectorGoogleAssistant {
         client_secret: this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_SECRET],
         refresh_token: this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN],
         type: this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]
-      },
-      {
-        logDebugInfo: this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DEBUG_INFO],
-        logData: this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA]
       }
     )
     this.client.include.audioOut = true
@@ -170,12 +164,27 @@ class BotiumConnectorGoogleAssistant {
     }
   }
 
-  async UserSays ({ messageText }) {
-    debug(`Request: ${messageText}`)
+  async UserSays (msg) {
+    debug(`Request: ${msg.messageText}`)
 
-    const { response, audioOut, screenOutHtml } = cleanResponse(await this.client.send(messageText))
+    if (msg.LOCATION) {
+      this.client.location = [
+        (msg.LOCATION.LONGITUDE && parseFloat(msg.LOCATION.LONGITUDE)) || 0.0,
+        (msg.LOCATION.LATITUDE && parseFloat(msg.LOCATION.LATITUDE)) || 0.0
+      ]
+      debug(`Using location: ${this.client.location}`)
+    } else if (this.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LATITUDE] && this.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LONGITUDE]) {
+      this.client.location = [
+        parseFloat(this.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LATITUDE]),
+        parseFloat(mthis.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LONGITUDE])
+      ]
+      debug(`Using location (from caps): ${this.client.location}`)
+    }
+    
+    const { response, audioOut, screenOutHtml } = cleanResponse(await this.client.send(msg.messageText))
     debug(`Response (without audioOut and screenOut): ${util.inspect(response)}`)
     this.client._isNewConversation = false
+    this.client.location = null
 
     const botMsg = {
       sender: 'bot',
