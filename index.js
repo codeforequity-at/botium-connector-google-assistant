@@ -176,11 +176,11 @@ class BotiumConnectorGoogleAssistant {
     } else if (this.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LATITUDE] && this.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LONGITUDE]) {
       this.client.location = [
         parseFloat(this.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LATITUDE]),
-        parseFloat(mthis.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LONGITUDE])
+        parseFloat(this.caps[Capabilities.GOOGLE_ASSISTANT_LOCATION_LONGITUDE])
       ]
       debug(`Using location (from caps): ${this.client.location}`)
     }
-    
+
     const { response, audioOut, screenOutHtml } = cleanResponse(await this.client.send(msg.messageText))
     debug(`Response (without audioOut and screenOut): ${util.inspect(response)}`)
     this.client._isNewConversation = false
