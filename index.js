@@ -158,6 +158,7 @@ class BotiumConnectorGoogleAssistant {
         logData: this.caps[Capabilities.GOOGLE_ASSISTANT_LOG_INCOMING_DATA]
       }
     )
+    this.client.include.audioOut = true
     this.client._isNewConversation = true
     // client has start function too, but it uses i18n, which is not well configurable
     if (this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) {
