@@ -1,6 +1,6 @@
 {
   "name": "botium-connector-google-assistant",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Botium Connector for Google Assistant",
   "main": "dist/botium-connector-google-assistant-cjs.js",
   "module": "dist/botium-connector-google-assistant-es.js",
