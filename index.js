@@ -2,6 +2,7 @@ const debug = require('debug')('botium-connector-google-assistant')
 const { ActionsOnGoogle } = require('actions-on-google-testing/dist/actions-on-google')
 const util = require('util')
 const mime = require('mime-types')
+const cheerio = require('cheerio')
 
 const Capabilities = {
   GOOGLE_ASSISTANT_CLIENT_ID: 'GOOGLE_ASSISTANT_CLIENT_ID',
@@ -9,12 +10,17 @@ const Capabilities = {
   GOOGLE_ASSISTANT_REFRESH_TOKEN: 'GOOGLE_ASSISTANT_REFRESH_TOKEN',
   GOOGLE_ASSISTANT_TYPE: 'GOOGLE_ASSISTANT_TYPE',
   GOOGLE_ASSISTANT_START_UTTERANCE: 'GOOGLE_ASSISTANT_START_UTTERANCE',
+  GOOGLE_ASSISTANT_READ_SCREEN: 'GOOGLE_ASSISTANT_READ_SCREEN',
   GOOGLE_ASSISTANT_END_UTTERANCE: 'GOOGLE_ASSISTANT_END_UTTERANCE',
   GOOGLE_ASSISTANT_LOCATION_LATITUDE: 'GOOGLE_ASSISTANT_LOCATION_LATITUDE',
   GOOGLE_ASSISTANT_LOCATION_LONGITUDE: 'GOOGLE_ASSISTANT_LOCATION_LONGITUDE'
 }
 
-const getCards = (response) => {
+const Defaults = {
+  [Capabilities.GOOGLE_ASSISTANT_READ_SCREEN]: true
+}
+
+const getCards = (response, $) => {
   let result = []
   if (response.cards) {
     result = result.concat(response.cards.map(c => {
@@ -63,20 +69,83 @@ const getCards = (response) => {
     }))
   }
 
+  if (result.length === 0 && $) {
+    const cardElements = $('.ByLMgc')
+    if (cardElements.length > 0) {
+      cardElements.each((i, elem) => {
+        const cardElement = $(elem)
+
+        const card = {}
+
+        const cardTitleElement = $('.lyLwlc.ITUZi', cardElement)
+        if (cardTitleElement.length > 0) card.text = cardTitleElement.text()
+
+        const cardSubtitleElement = $('.lyLwlc.aLF0Z', cardElement)
+        if (cardSubtitleElement.length > 0) card.subtext = cardSubtitleElement.text()
+
+        const cardContentElement = $('.lyLwlc.v0nnCb', cardElement)
+        if (cardContentElement.length > 0) card.content = cardContentElement.text()
+
+        const cardButtonElement = $('.gbj1yb', cardElement)
+        if (cardButtonElement.length > 0) card.buttons = [{ text: cardButtonElement.text() }]
+
+        const cardImageElement = $('.BTQbye img')
+        if (cardImageElement.length > 0) {
+          const imageUrl = cardImageElement.attr('src')
+          card.image = {
+            mediaUri: imageUrl,
+            mimeType: mime.lookup(imageUrl) || 'image/unknown'
+          }
+        }
+        card.text = card.text || card.subtext || card.content
+
+        result.push(card)
+      })
+    }
+    const carouselElements = $('.carousel_tv_item')
+    if (carouselElements.length > 0) {
+      carouselElements.each((i, elem) => {
+        const carouselElement = $(elem)
+
+        const card = {}
+
+        const cardTitleElement = $('.v0nnCb', carouselElement)
+        if (cardTitleElement.length > 0) card.text = cardTitleElement.text()
+
+        const cardSubtitleElement = $('.oEd5Yc', carouselElement)
+        if (cardSubtitleElement.length > 0) card.subtext = cardSubtitleElement.text()
+
+        const cardContentElement = $('.lEBKkf', carouselElement)
+        if (cardContentElement.length > 0) card.content = cardContentElement.text()
+
+        const cardImageElement = $('img', carouselElement)
+        if (cardImageElement.length > 0) {
+          const imageUrl = cardImageElement.attr('src')
+          card.image = {
+            mediaUri: imageUrl,
+            mimeType: mime.lookup(imageUrl) || 'image/unknown'
+          }
+        }
+        card.text = card.text || card.subtext
+
+        result.push(card)
+      })
+    }
+  }
   return result
 }
 
-const getMessageText = (response) => {
+const getMessageText = (response, $) => {
   let result = []
-  if (response.textToSpeech && response.textToSpeech.length) {
+  if (response.textToSpeech && response.textToSpeech.length > 0) {
     result = result.concat(response.textToSpeech)
   }
 
-  if (response.ssml && response.ssml.length) {
+  if (response.ssml && response.ssml.length > 0) {
     result = result.concat(response.ssml)
   }
   // just to be sure returning this field too as fallback
-  if (response.displayText && response.displayText.length) {
+  if (response.displayText && response.displayText.length > 0) {
     result = result.concat(response.displayText)
   }
 
@@ -84,16 +153,42 @@ const getMessageText = (response) => {
     result.push(response.list.title)
   }
 
+  if (result.length === 0 && $) {
+    const textContentElement = $('.show_text_content')
+    if (textContentElement.length > 0) {
+      const text = textContentElement.text()
+      if (text) {
+        result.push(text)
+      }
+    }
+    const listHeaderElement = $('.ITUZi')
+    if (listHeaderElement.length > 0) {
+      const text = listHeaderElement.text()
+      if (text) {
+        result.push(text)
+      }
+    }
+  }
+
   return result.join('\n')
 }
 
-const getButtons = (response) => {
+const getButtons = (response, $) => {
   let result = []
-  if (response.suggestions) {
+  if (response.suggestions && response.suggestions.length > 0) {
     result = result.concat(response.suggestions.map(s => ({ text: s.title || s })))
   }
   if (response.linkOutSuggestion) {
     result.push({ text: response.linkOutSuggestion.name, payload: response.linkOutSuggestion.url })
+  }
+
+  if (result.length === 0 && $) {
+    const suggestionElements = $('.suggestion')
+    if (suggestionElements.length > 0) {
+      suggestionElements.each((i, elem) => {
+        result.push({ text: $(elem).text() })
+      })
+    }
   }
 
   return result
@@ -130,13 +225,14 @@ class BotiumConnectorGoogleAssistant {
 
   Validate () {
     debug('Validate called')
+
+    this.caps = Object.assign({}, Defaults, this.caps)
+
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_ID]) throw new Error('GOOGLE_ASSISTANT_CLIENT_ID capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_CLIENT_SECRET]) throw new Error('GOOGLE_ASSISTANT_CLIENT_SECRET capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_REFRESH_TOKEN]) throw new Error('GOOGLE_ASSISTANT_REFRESH_TOKEN capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_TYPE]) throw new Error('GOOGLE_ASSISTANT_TYPE capability required')
     if (!this.caps[Capabilities.GOOGLE_ASSISTANT_END_UTTERANCE]) throw new Error('GOOGLE_ASSISTANT_END_UTTERANCE capability required')
-
-    return Promise.resolve()
   }
 
   async Build () {
@@ -153,13 +249,24 @@ class BotiumConnectorGoogleAssistant {
       }
     )
     this.client.include.audioOut = true
+    this.client.include.screenOut = !!this.caps[Capabilities.GOOGLE_ASSISTANT_READ_SCREEN]
     this.client._isNewConversation = true
     // client has start function too, but it uses i18n, which is not well configurable
     if (this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) {
       const startUtterance = this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]
       debug(`Sending start utterance: ${startUtterance}`)
-      const { response } = cleanResponse(await this.client.send(startUtterance))
+      const { response, screenOutHtml } = cleanResponse(await this.client.send(startUtterance))
       debug(`Received start response: ${util.inspect(response)}`)
+
+      const $ = !!this.caps[Capabilities.GOOGLE_ASSISTANT_READ_SCREEN] && screenOutHtml ? cheerio.load(screenOutHtml) : null
+      const startMsg = {
+        messageText: getMessageText(response, $),
+        buttons: getButtons(response, $),
+        media: getMedia(response, $),
+        cards: getCards(response, $)
+      }
+      debug(`Ignoring start response: ${util.inspect(startMsg)}`)
+
       this.client._isNewConversation = false
     }
   }
@@ -186,12 +293,14 @@ class BotiumConnectorGoogleAssistant {
     this.client._isNewConversation = false
     this.client.location = null
 
+    const $ = !!this.caps[Capabilities.GOOGLE_ASSISTANT_READ_SCREEN] && screenOutHtml ? cheerio.load(screenOutHtml) : null
+
     const botMsg = {
       sender: 'bot',
-      messageText: getMessageText(response),
-      buttons: getButtons(response),
-      media: getMedia(response),
-      cards: getCards(response),
+      messageText: getMessageText(response, $),
+      buttons: getButtons(response, $),
+      media: getMedia(response, $),
+      cards: getCards(response, $),
       sourceData: response,
       attachments: []
     }
