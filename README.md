@@ -132,8 +132,8 @@ or
 
 Follow the suggested steps:
 * you will be asked for location of the downloaded credential file
-* you will be presented a hyperlink you have to open in your browser to connect your Action to your Google account. (You have to use the same Google account as for developing the action if action is not published yet. OTHERWISE YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE)
-* you will be asked for start utterance, which activates your action. It is the same what you can see on Actions console simulator (_https://console.actions.google.com/project/YOURPROJECTID/simulator_) IF THIS VALUE IS NOT CORRECT, YOU GOT ALWAYS EMPTY RESPONSE, WITHOUT ERROR MESSAGE.
+* you will be presented a hyperlink you have to open in your browser to connect your Action to your Google account. You have to use the same Google account as for developing the action if action is not published yet.
+* you will be asked for start utterance, which activates(launches) your action. It is the same what you can see on Actions console simulator (_https://console.actions.google.com/project/YOURPROJECTID/simulator_).
 * and stop utterance, which deactivates your action.
 
 ### 3. Use the generated botium.json
