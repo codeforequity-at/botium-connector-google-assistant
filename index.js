@@ -334,8 +334,6 @@ class BotiumConnectorGoogleAssistant {
       })
     }
     if (screenOutHtml) {
-      require('fs').writeFileSync('out.html', Buffer.from(screenOutHtml))
-
       botMsg.attachments.push({
         name: 'google-assistant-screen.html',
         mimeType: 'text/html',
