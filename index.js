@@ -4,6 +4,7 @@ const util = require('util')
 const mime = require('mime-types')
 const cheerio = require('cheerio')
 const textVersion = require('textversionjs')
+const he = require('he')
 
 const Capabilities = {
   GOOGLE_ASSISTANT_CLIENT_ID: 'GOOGLE_ASSISTANT_CLIENT_ID',
@@ -20,6 +21,8 @@ const Capabilities = {
 const Defaults = {
   [Capabilities.GOOGLE_ASSISTANT_READ_SCREEN]: true
 }
+
+const safehe = (t) => t && t.length > 0 ? he.decode(t) : t
 
 const getCards = (response, $) => {
   let result = []
@@ -79,16 +82,16 @@ const getCards = (response, $) => {
         const card = {}
 
         const cardTitleElement = $('.lyLwlc.ITUZi', cardElement)
-        if (cardTitleElement.length > 0) card.text = cardTitleElement.text()
+        if (cardTitleElement.length > 0) card.text = safehe(cardTitleElement.text())
 
         const cardSubtitleElement = $('.lyLwlc.aLF0Z', cardElement)
-        if (cardSubtitleElement.length > 0) card.subtext = cardSubtitleElement.text()
+        if (cardSubtitleElement.length > 0) card.subtext = safehe(cardSubtitleElement.text())
 
         const cardContentElement = $('.lyLwlc.v0nnCb', cardElement)
-        if (cardContentElement.length > 0) card.content = cardContentElement.text()
+        if (cardContentElement.length > 0) card.content = safehe(cardContentElement.text())
 
         const cardButtonElement = $('.gbj1yb', cardElement)
-        if (cardButtonElement.length > 0) card.buttons = [{ text: cardButtonElement.text() }]
+        if (cardButtonElement.length > 0) card.buttons = [{ text: safehe(cardButtonElement.text()) }]
 
         const cardImageElement = $('.BTQbye img')
         if (cardImageElement.length > 0) {
@@ -112,13 +115,13 @@ const getCards = (response, $) => {
         }
 
         const cardTitleElement = $('.v0nnCb', carouselElement)
-        if (cardTitleElement.length > 0) card.text = cardTitleElement.text()
+        if (cardTitleElement.length > 0) card.text = safehe(cardTitleElement.text())
 
         const cardSubtitleElement = $('.oEd5Yc', carouselElement)
-        if (cardSubtitleElement.length > 0) card.subtext = cardSubtitleElement.text()
+        if (cardSubtitleElement.length > 0) card.subtext = safehe(cardSubtitleElement.text())
 
         const cardContentElement = $('.lEBKkf', carouselElement)
-        if (cardContentElement.length > 0) card.content = cardContentElement.text()
+        if (cardContentElement.length > 0) card.content = safehe(cardContentElement.text())
 
         const cardImageElement = $('img', carouselElement)
         if (cardImageElement.length > 0) {
@@ -167,12 +170,12 @@ const getMessageText = (response, $) => {
     const textContentElement = $('.show_text_content')
     if (textContentElement.length > 0) {
       textContentElement.each((i, elem) => {
-        result.push($(elem).text())
+        result.push(safehe($(elem).text()))
       })
     }
     const listHeaderElement = $('.ITUZi')
     if (listHeaderElement.length > 0) {
-      result.push(listHeaderElement.text())
+      result.push(safehe(listHeaderElement.text()))
     }
   }
 
@@ -192,7 +195,7 @@ const getButtons = (response, $) => {
     const suggestionElements = $('.suggestion')
     if (suggestionElements.length > 0) {
       suggestionElements.each((i, elem) => {
-        result.push({ text: $(elem).text() })
+        result.push({ text: safehe($(elem).text()) })
       })
     }
   }
@@ -222,9 +225,9 @@ const scrapeDefaults = (botMsg, $) => {
   if (!botMsg.messageText && !has(botMsg.media) && !has(botMsg.cards)) {
     const popoutContentElement = $('.popout-content')
     if (popoutContentElement.length > 0) {
-      botMsg.messageText = textVersion(popoutContentElement.html(), {
+      botMsg.messageText = safehe(textVersion(popoutContentElement.html(), {
         imgProcess: () => ''
-      }) || null
+      }) || null)
     }
   }
 
