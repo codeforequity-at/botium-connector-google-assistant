@@ -1,5 +1,5 @@
 const debug = require('debug')('botium-connector-google-assistant')
-const { ActionsOnGoogle } = require('actions-on-google-testing/dist/actions-on-google')
+const { ActionsOnGoogle, AUDIO_OUT_ENCODINGS } = require('actions-on-google-testing/dist/actions-on-google')
 const util = require('util')
 const mime = require('mime-types')
 const cheerio = require('cheerio')
@@ -165,15 +165,6 @@ const getMessageText = (response, $) => {
     if (listHeaderElement.length > 0) {
       result.push(listHeaderElement.text())
     }
-
-    if (result.length === 0) {
-      const popoutContentElement = $('.popout-content')
-      if (popoutContentElement.length > 0) {
-        result.push(textVersion(popoutContentElement.html(), {
-          imgProcess: () => ''
-        }))
-      }
-    }
   }
 
   return result.filter(r => r).join('\n')
@@ -213,20 +204,34 @@ const getMedia = (response, $) => {
     })
   }
 
-  if (result.length === 0 && $) {
+  return result
+}
+
+const scrapeDefaults = (botMsg, $) => {
+  const has = (a) => a && a.length > 0
+
+  if (!botMsg.messageText && !has(botMsg.media) && !has(botMsg.cards)) {
+    const popoutContentElement = $('.popout-content')
+    if (popoutContentElement.length > 0) {
+      botMsg.messageText = textVersion(popoutContentElement.html(), {
+        imgProcess: () => ''
+      }) || null
+    }
+  }
+
+  if (!has(botMsg.media) && !has(botMsg.cards)) {
     const imgElements = $('.popout-content img')
     if (imgElements.length > 0) {
+      botMsg.media = []
       imgElements.each((i, elem) => {
         const imageUrl = $(elem).attr('src')
-        result.push({
+        botMsg.media.push({
           mediaUri: imageUrl,
           mimeType: mime.lookup(imageUrl) || 'image/unknown'
         })
       })
     }
   }
-
-  return result
 }
 
 const cleanResponse = (response) => {
@@ -271,6 +276,8 @@ class BotiumConnectorGoogleAssistant {
     )
     this.client.include.audioOut = true
     this.client.include.screenOut = !!this.caps[Capabilities.GOOGLE_ASSISTANT_READ_SCREEN]
+    this.client.audioOutEncoding = AUDIO_OUT_ENCODINGS.MP3
+
     this.client._isNewConversation = true
     // client has start function too, but it uses i18n, which is not well configurable
     if (this.caps[Capabilities.GOOGLE_ASSISTANT_START_UTTERANCE]) {
@@ -325,6 +332,7 @@ class BotiumConnectorGoogleAssistant {
       sourceData: response,
       attachments: []
     }
+    if ($) scrapeDefaults(botMsg, $)
 
     if (audioOut) {
       botMsg.attachments.push({
