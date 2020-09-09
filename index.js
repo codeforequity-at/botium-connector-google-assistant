@@ -173,10 +173,6 @@ const getMessageText = (response, $) => {
         result.push(safehe($(elem).text()))
       })
     }
-    const listHeaderElement = $('.ITUZi')
-    if (listHeaderElement.length > 0) {
-      result.push(safehe(listHeaderElement.text()))
-    }
   }
 
   return result.filter(r => r).join('\n')
@@ -228,6 +224,14 @@ const scrapeDefaults = (botMsg, $) => {
       botMsg.messageText = safehe(textVersion(popoutContentElement.html(), {
         imgProcess: () => ''
       }) || null)
+    }
+  }
+
+  if (!has(botMsg.buttons)) {
+    const followUpUrlElement = $('.popout-content span[data-url!=\'\']')
+    if (followUpUrlElement.length > 0) {
+      botMsg.buttons = []
+      botMsg.buttons.push({ text: safehe(followUpUrlElement.text()) || followUpUrlElement.attr('data-url'), payload: followUpUrlElement.attr('data-url') })
     }
   }
 
