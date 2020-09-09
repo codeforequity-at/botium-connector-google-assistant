@@ -332,7 +332,7 @@ class BotiumConnectorGoogleAssistant {
       sourceData: response,
       attachments: []
     }
-    if ($) scrapeDefaults(botMsg, $)    
+    if ($) scrapeDefaults(botMsg, $)
 
     if (audioOut) {
       botMsg.attachments.push({

@@ -45,6 +45,8 @@
     "lodash": "^4.17.15",
     "mime-types": "^2.1.25",
     "readline-sync": "^1.4.10",
-    "textversionjs": "^1.1.3"
+    "textversionjs": "^1.1.3",
+    "typescript": "^4.0.2",
+    "yarn": "^1.22.5"
   }
 }
