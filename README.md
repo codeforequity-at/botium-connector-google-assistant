@@ -66,9 +66,9 @@ BUTTONS button1|button2
 ```
 
 ### Account linking
-* You can test your action with non-linked user without any change.
+* You can test your action with non-linked user without any change
 * If you invoke the account linking process with this non-linked user, nothing happens. You got empty message return, and the account wont be linked
-* If you perm account linking in Actions console simulator, then you will got a linked user
+* If you perm account linking in Actions console simulator, then you will get a linked user
 * Tested just on [Account linking with Google Sign-In](https://developers.google.com/actions/identity/google-sign-in)
 * You can see account linking on https://myaccount.google.com/permissions
 
@@ -100,7 +100,8 @@ _Already integrated into Botium Box, no setup required_
 
 ### 1. Prepare googleConfig.json (Google credentials)
 
-* Configure an Actions Console project (See [here](https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account))
+* Configure an Actions Console project (See [here](https://developers.google.com/assistant/sdk/guides/service/python/embed/config-dev-project-and-account)) or open an existing one
+* If your Action is not yet live, [enable device testing in the Actions Console](https://developers.google.com/assistant/smarthome/develop/testing#setup) to test it with Botium
 * Register a Device Model (See [here](https://developers.google.com/assistant/sdk/guides/service/python/embed/register-device)) and download the OAuth 2.0 credentials file
     * Rename the file to _googleConfig.json_
     * You can download the credentials [here](https://console.developers.google.com/apis/credentials) as well
