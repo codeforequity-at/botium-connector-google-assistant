@@ -1,18 +1,13 @@
 {
-  "name": "convo",
+  "name": "botium-connector-google-assistant-sample",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "init-google": "botium-connector-google-assistant-init",
     "test": "mocha spec"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "botium": {
     "convodirs": [
-      "spec\\convo"
+      "spec/convo"
     ],
     "expandConvos": true,
     "expandUtterancesToConvos": false
