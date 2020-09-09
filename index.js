@@ -108,7 +108,8 @@ const getCards = (response, $) => {
       carouselElements.each((i, elem) => {
         const carouselElement = $(elem)
 
-        const card = {}
+        const card = {
+        }
 
         const cardTitleElement = $('.v0nnCb', carouselElement)
         if (cardTitleElement.length > 0) card.text = cardTitleElement.text()
@@ -127,6 +128,14 @@ const getCards = (response, $) => {
             mimeType: mime.lookup(imageUrl) || 'image/unknown'
           }
         }
+
+        card.buttons = []
+
+        const followUpQueryElement = $('span[data-follow-up-query!=\'\']', carouselElement)
+        if (followUpQueryElement.length > 0) card.buttons.push({ text: followUpQueryElement.attr('data-follow-up-query') })
+        const followUpUrlElement = $('span[data-url!=\'\']', carouselElement)
+        if (followUpUrlElement.length > 0) card.buttons.push({ text: card.text || followUpUrlElement.attr('data-url'), payload: followUpUrlElement.attr('data-url') })
+
         card.text = card.text || card.subtext
 
         result.push(card)
