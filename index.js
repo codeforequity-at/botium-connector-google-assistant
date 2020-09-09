@@ -3,6 +3,7 @@ const { ActionsOnGoogle } = require('actions-on-google-testing/dist/actions-on-g
 const util = require('util')
 const mime = require('mime-types')
 const cheerio = require('cheerio')
+const textVersion = require('textversionjs')
 
 const Capabilities = {
   GOOGLE_ASSISTANT_CLIENT_ID: 'GOOGLE_ASSISTANT_CLIENT_ID',
@@ -156,21 +157,26 @@ const getMessageText = (response, $) => {
   if (result.length === 0 && $) {
     const textContentElement = $('.show_text_content')
     if (textContentElement.length > 0) {
-      const text = textContentElement.text()
-      if (text) {
-        result.push(text)
-      }
+      textContentElement.each((i, elem) => {
+        result.push($(elem).text())
+      })
     }
     const listHeaderElement = $('.ITUZi')
     if (listHeaderElement.length > 0) {
-      const text = listHeaderElement.text()
-      if (text) {
-        result.push(text)
+      result.push(listHeaderElement.text())
+    }
+
+    if (result.length === 0) {
+      const popoutContentElement = $('.popout-content')
+      if (popoutContentElement.length > 0) {
+        result.push(textVersion(popoutContentElement.html(), {
+          imgProcess: () => ''
+        }))
       }
     }
   }
 
-  return result.join('\n')
+  return result.filter(r => r).join('\n')
 }
 
 const getButtons = (response, $) => {
@@ -194,18 +200,33 @@ const getButtons = (response, $) => {
   return result
 }
 
-const getMedia = (response) => {
-  const m = response.mediaResponse
+const getMedia = (response, $) => {
+  let result = []
 
+  const m = response.mediaResponse
   if (m) {
     const mediaUri = (m.largeImage || m.icon)
-    return [{
+    result.push({
       mediaUri,
       mimeType: mime.lookup(mediaUri) || 'application/unknown',
       altText: m.name || m.description
-    }]
+    })
   }
-  return []
+
+  if (result.length === 0 && $) {
+    const imgElements = $('.popout-content img')
+    if (imgElements.length > 0) {
+      imgElements.each((i, elem) => {
+        const imageUrl = $(elem).attr('src')
+        result.push({
+          mediaUri: imageUrl,
+          mimeType: mime.lookup(imageUrl) || 'image/unknown'
+        })
+      })
+    }
+  }
+
+  return result
 }
 
 const cleanResponse = (response) => {
@@ -313,6 +334,8 @@ class BotiumConnectorGoogleAssistant {
       })
     }
     if (screenOutHtml) {
+      require('fs').writeFileSync('out.html', Buffer.from(screenOutHtml))
+
       botMsg.attachments.push({
         name: 'google-assistant-screen.html',
         mimeType: 'text/html',

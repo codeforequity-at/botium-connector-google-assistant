@@ -209,7 +209,7 @@ The simpliest way to acquire it, is the initialization tool described above
 Set it to "authorized_user"
 
 ### GOOGLE_ASSISTANT_START_UTTERANCE
-It is "Talk to my test app" if the name of your app is "my test app", which is the default value.
+If you want Botium to launch your own Google Action before starting a test case. It is something like "Talk to my test app" if the name of your app is "my test app", which is the default value.
 
 ### GOOGLE_ASSISTANT_END_UTTERANCE
 Use "Cancel"
