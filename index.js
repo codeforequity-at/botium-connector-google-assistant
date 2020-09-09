@@ -201,7 +201,7 @@ const getButtons = (response, $) => {
 }
 
 const getMedia = (response, $) => {
-  let result = []
+  const result = []
 
   const m = response.mediaResponse
   if (m) {
