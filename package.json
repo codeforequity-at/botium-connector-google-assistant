@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.3",
-    "actions-on-google-testing": "https://github.com/codeforequity-at/actions-on-google-testing-nodejs.git#master",
+    "actions-on-google-testing": "npm:botium-actions-on-google-testing-nodejs@^0.4.0",
     "cheerio": "^1.0.0-rc.3",
     "debug": "^4.1.1",
     "he": "^1.2.0",
@@ -46,8 +46,6 @@
     "lodash": "^4.17.15",
     "mime-types": "^2.1.25",
     "readline-sync": "^1.4.10",
-    "textversionjs": "^1.1.3",
-    "typescript": "^4.0.2",
-    "yarn": "^1.22.5"
+    "textversionjs": "^1.1.3"
   }
 }
